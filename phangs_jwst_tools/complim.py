@@ -35,7 +35,7 @@ def fake_image(
     n_sources (int): Number of sources to generate. Note only sources
                      inside the valid regions of the image will be generated.
     charflux (Quantity, optional): Characteristic flux of the sources. Defaults to 100 uJy.
-    return_hdu (bool, optional): If True, return an HDU list instead of an image. 
+    return_hdu (bool, optional): If True, return an HDU list instead of an image.
     fluxspread (int, optional): Spread of the log normal flux distribution. Defaults to 2.
 
     Returns:
@@ -99,10 +99,11 @@ def fake_image(
         )
         psf_shift *= fluxconv.value * fluxfake[ii].value
         fakeimage[
-            int(yy) - psf_shift.shape[0] // 2:int(yy)
+            int(yy) - psf_shift.shape[0] // 2 : int(yy)
             + psf_shift.shape[0] // 2
             + psf_shift.shape[0] % 2,
-            int(xx) - psf_shift.shape[1] // 2:int(xx) + psf_shift.shape[1] // 2 
+            int(xx) - psf_shift.shape[1] // 2 : int(xx)
+            + psf_shift.shape[1] // 2
             + psf_shift.shape[1] % 2,
         ] += psf_shift
     if return_hdu:
@@ -182,15 +183,15 @@ def phot_catalog(
     image (ndarray): Input image.
     wcs (WCS): World Coordinate System of the image.
     psf_fwhm (float): Full width at half maximum of the point spread function.
-    xcentroids (ndarray, optional): X coordinates of the sources. 
+    xcentroids (ndarray, optional): X coordinates of the sources.
                 If None, they will be computed. Defaults to None.
-    ycentroids (ndarray, optional): Y coordinates of the sources. 
+    ycentroids (ndarray, optional): Y coordinates of the sources.
                If None, they will be computed. Defaults to None.
-    filter_diffuse (bool, optional): If True, apply a diffusion  
+    filter_diffuse (bool, optional): If True, apply a diffusion
                 filter to the image. Defaults to False.
-                
+
     Returns:
-    Table: Photometric catalog with columns for xcentroid, ycentroid, 
+    Table: Photometric catalog with columns for xcentroid, ycentroid,
            aperflux (aperture flux), bkgflux (background flux), RA, DEC, and skycoord.
     """
     if xcentroids is not None and ycentroids is not None:
@@ -234,7 +235,7 @@ def completeness_analysis(
     fakefiles, catfiles, compfrac=0.99, verbose=True, match_radius=0.1 * u.arcsec
 ):
     """
-    Given a list of sources with fakes injected and a list of catalogs for those sources, 
+    Given a list of sources with fakes injected and a list of catalogs for those sources,
     measure the completeness limit.
     """
     sourcecats = []
@@ -307,18 +308,18 @@ def completeness_limit(
     Parameters:
     FILENAME (str): Path to the FITS file to be processed.
     oversample (int, optional): Oversampling factor for the PSF calculation. Defaults to 4.
-    match_radius (Quantity, optional): Maximum distance for a source to be considered a match. 
+    match_radius (Quantity, optional): Maximum distance for a source to be considered a match.
                  Defaults to 0.1 arcsec.
     n_batch (int, optional): Number of batches to process. Defaults to 5.
-    n_sources (int, optional): Number of sources to generate in the fake image. 
+    n_sources (int, optional): Number of sources to generate in the fake image.
               Defaults to 1000.
-    write_fake_files (bool, optional): If True, write images with fake sources. 
+    write_fake_files (bool, optional): If True, write images with fake sources.
               Defaults to False.
-    write_catalogs (bool, optional): If True, write catalogs of the fake sources. 
+    write_catalogs (bool, optional): If True, write catalogs of the fake sources.
               Defaults to False.
-    compfrac (float, optional): Completeness fraction to calculate the limit for. 
+    compfrac (float, optional): Completeness fraction to calculate the limit for.
               Defaults to 0.99.
-    verbose (bool, optional): If True, print additional information and plot the 
+    verbose (bool, optional): If True, print additional information and plot the
             completeness curve. Defaults to True.
 
     Returns:
