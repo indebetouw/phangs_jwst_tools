@@ -1,7 +1,7 @@
 
 
 def test_primes():
-    from ..complim import *
+    from ..complim import constrained_diffusion
     assert 3 == 3
 
 
