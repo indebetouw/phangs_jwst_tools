@@ -273,15 +273,8 @@ def completeness_analysis(
         ax.semilogx(sourcecats["flux"], sourcecats["DETECT"], "o", markersize=3)
         x = np.geomspace(1e-1, 1e4, 300)
         ax.plot(
-            x,
-            1
-            / (
-                1
-                + np.exp(
-                    -compmodel.params["Intercept"]
-                    - compmodel.params["LOGFLUX"] * np.log10(x)
-                )
-            ),
+            x, 1 / (1 + np.exp(-compmodel.params["Intercept"]
+                               -compmodel.params["LOGFLUX"] * np.log10(x))),
             color="r",
         )
         ax.set_xscale("log")
@@ -301,6 +294,7 @@ def completeness_limit(
     write_catalogs=False,
     compfrac=0.99,
     verbose=True,
+    doplot=False,
 ):
     """
     Calculate the completeness limit of an image.
@@ -396,36 +390,37 @@ def completeness_limit(
     )
     if verbose:
         print(compmodel.summary())
+        print(f"{compfrac*100}% Completeness limit: {complim:5.2f} µJy")
+    if doplot:
         fig, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax.semilogx(sourcecats["TRUE_FLUX"], sourcecats["DETECT"], "o", markersize=3)
         x = np.geomspace(1e-1, 1e4, 300)
-        ax.plot(
-            x,
-            1
-            / (
-                1
-                + np.exp(
-                    -compmodel.params["Intercept"]
-                    - compmodel.params["LOGFLUX"] * np.log10(x)
-                )
-            ),
+        ax.plot(x, 1 / (1 + np.exp(-compmodel.params["Intercept"]
+                                   - compmodel.params["LOGFLUX"] * np.log10(x))),
             color="r",
         )
         ax.set_xscale("log")
         shortname = os.path.basename(FILENAME).replace(".fits", "")
         fig.savefig(f"completeness_{shortname}.png")
-        print(f"{compfrac*100}% Completeness limit: {complim:5.2f} µJy")
     return complim, compmodel
 
 
-if __name__ == "__main__":
-    FILENAME = sys.argv[1]
+def main():
+    try:
+        FILENAME = sys.argv[1]
+    except IndexError:
+        print("Usage: jwst_complim <Level3_fits_filename> <completeness_fraction_0_to_1>")
+        sys.exit(1)
+    if len(sys.argv) > 2:
+        compfrac = float(sys.argv[2])
+    else:
+        compfrac = 0.99    
     complim, _ = completeness_limit(
         FILENAME,
         n_sources=1000,
-        write_fake_files=True,
-        write_catalogs=True,
-        compfrac=0.99,
+        write_fake_files=False,
+        write_catalogs=False,
+        compfrac=compfrac
     )
-    print(f"For file {os.path.basename(FILENAME)}, the 99% completeness limit is:")
+    print(f"For file {os.path.basename(FILENAME)}, the {compfrac*100}% completeness limit is:")
     print(f"{complim:5.2f} µJy")

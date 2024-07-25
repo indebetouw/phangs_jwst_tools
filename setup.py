@@ -76,3 +76,6 @@ except Exception:
 
 setup(use_scm_version={'write_to': os.path.join('phangs_jwst_tools', 'version.py'),
                        'write_to_template': VERSION_TEMPLATE})
+# setup(name='jwst_complim',
+#       entry_points={'console_scripts': ['jwst_complim = phangs_jwst_tools.complim:main']})
+     
